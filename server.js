@@ -2,7 +2,7 @@ const express = require("express");
 const routes = require("./src/route");
 const app = express();
 const host = "0.0.0.0";
-const port = 3000;
+const port = 8080;
 
 const runSever = () => {
   app.use(express.json());
