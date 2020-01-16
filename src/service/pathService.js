@@ -92,7 +92,7 @@ const filterAutonnomy = (paths, autonomy) => {
     for (let tripDay = 1; tripDay < path.length; tripDay++) {
       const lastStep = path[tripDay - 1];
       const step = path[tripDay];
-      // If we stay 2 days in a planet then we refuel
+      // If we stay 2 days in a planet then we automaticly refuel
       if (step == lastStep && lastStep != SPACE_STEP) {
         fuelReserve = autonomy;
       } else {
