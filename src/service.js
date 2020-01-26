@@ -3,7 +3,7 @@ const { buildTravelBook } = require("./service/travelBookService");
 const { buildPaths } = require("./service/pathService");
 
 const getPaths = async empireParam => {
-  const travelBooks = await buildTravelBook(tripParam);
+  const travelBooks = await buildTravelBook(tripParam, empireParam);
   const paths = buildPaths(travelBooks, empireParam, tripParam);
   return paths;
 };

@@ -1,4 +1,3 @@
-const Graph = require("node-all-paths");
 const sqlite3 = require("sqlite3").verbose();
 
 const SPACE_STEP = "space";
@@ -8,14 +7,30 @@ const SPACE_STEP = "space";
  * @param {*} rows
  */
 const buildGalaxyMap = rows => {
-  const galaxyMap = {};
-  rows.forEach(row => {
-    if (!row.ORIGIN) {
-      return {};
-    }
-    galaxyMap[row.ORIGIN] = galaxyMap[row.ORIGIN] ? galaxyMap[row.ORIGIN] : {};
-    galaxyMap[row.ORIGIN][row.DESTINATION] = row.TRAVEL_TIME;
-  });
+  const galaxyMap = [];
+  if (rows) {
+    rows.forEach(row => {
+      if (!row.ORIGIN) {
+        return {};
+      }
+      //both side
+      galaxyMap[row.ORIGIN] = galaxyMap[row.ORIGIN]
+        ? galaxyMap[row.ORIGIN]
+        : [];
+      galaxyMap[row.ORIGIN].push({
+        planet: row.DESTINATION,
+        trip: row.TRAVEL_TIME
+      });
+
+      galaxyMap[row.DESTINATION] = galaxyMap[row.DESTINATION]
+        ? galaxyMap[row.DESTINATION]
+        : [];
+      galaxyMap[row.DESTINATION].push({
+        planet: row.ORIGIN,
+        trip: row.TRAVEL_TIME
+      });
+    });
+  }
   return galaxyMap;
 };
 
@@ -65,14 +80,54 @@ const queryAll = (query, dbName) => {
   });
 };
 
+const buildPath = (galaxyMap, countdown, departure, arrival) => {
+  const paths = [];
+  if (!galaxyMap) {
+    return paths;
+  }
+  const path = {
+    path: [],
+    countdown: 0
+  };
+  const findNeighbors = (path, planet, arrival, countdown, galaxyMap) => {
+    // Add current planet
+    path.path.push(planet.planet);
+    path.countdown = path.countdown + planet.trip;
+
+    if (path.countdown >= countdown) {
+      // nothing
+    } else if (planet.planet == arrival) {
+      paths.push(path);
+    } else {
+      // Find potential planet
+      const neighbors = galaxyMap[planet.planet];
+      neighbors.forEach(neighbor => {
+        let newPath = {
+          path: path ? Array.from(path.path) : [],
+          countdown: path.countdown
+        };
+        findNeighbors(newPath, neighbor, arrival, countdown, galaxyMap);
+      });
+    }
+  };
+
+  const departureStructured = { planet: departure, trip: 0 };
+  findNeighbors(path, departureStructured, arrival, countdown, galaxyMap);
+  return paths.map(path => path.path);
+};
+
 /**
  * Build book with all the possible paths
  */
-const buildTravelBook = async tripParam => {
+const buildTravelBook = async (tripParam, empireParam) => {
   const rows = await queryAll("SELECT * FROM ROUTES", tripParam.routes_db);
   const galaxyMap = buildGalaxyMap(rows);
-  const galaxyGraph = new Graph(galaxyMap);
-  const paths = galaxyGraph.path(tripParam.departure, tripParam.arrival);
+  const paths = buildPath(
+    galaxyMap,
+    empireParam.countdown,
+    tripParam.departure,
+    tripParam.arrival
+  );
   const travelBook = buildPathWithSpace(paths, rows);
   return travelBook;
 };
@@ -80,5 +135,6 @@ const buildTravelBook = async tripParam => {
 module.exports = {
   buildTravelBook,
   buildGalaxyMap,
-  buildPathWithSpace
+  buildPathWithSpace,
+  buildPath
 };

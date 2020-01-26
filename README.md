@@ -85,4 +85,3 @@ My logic to build the app is :
     - be able to test them unitary
     - be able to make the project evolvable more easily
 
-- I use an external library (node-all-paths) on purpose , because it's not always needed to reinvent the wheel.
