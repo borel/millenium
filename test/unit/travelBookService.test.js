@@ -158,7 +158,7 @@ describe("TravelBookService", () => {
     dataDriven.forEach(ctx => {
       it(ctx.desc, () => {
         const galaxyMap = buildGalaxyMap(ctx.element.rows);
-        const paths = buildPath(galaxyMap, 5, "A", "D");
+        const paths = buildPath(galaxyMap, 6, "A", "D");
         const pathWithSpace = buildPathWithSpace(paths, ctx.element.rows);
         console.log("pathWithSpace", pathWithSpace);
         expect(pathWithSpace).to.eql(ctx.expected.pathWithSpace);
