@@ -34,39 +34,6 @@ const buildGalaxyMap = rows => {
   return galaxyMap;
 };
 
-/**
- * Build fill path with planet stop and space
- * @param {*} routes
- */
-const buildPathWithSpace = (paths, rows) => {
-  if (!paths || paths.length == 0 || !rows || rows.length == 0) {
-    return [];
-  }
-  return paths.map(path => {
-    const pathsWithSpace = [];
-    let position = 0;
-    path.forEach((element, index) => {
-      pathsWithSpace.push({ name: element, position });
-      position++;
-      // Add 'space' step between planet if needed
-      const stepDb = rows.filter(
-        row => row.ORIGIN == element && row.DESTINATION == path[index + 1]
-      );
-      if (stepDb.length && stepDb[0].TRAVEL_TIME > 1) {
-        for (
-          let travelTime = 1;
-          travelTime < stepDb[0].TRAVEL_TIME;
-          travelTime++
-        ) {
-          pathsWithSpace.push({ name: SPACE_STEP, position });
-          position++;
-        }
-      }
-    });
-    return pathsWithSpace;
-  });
-};
-
 const queryAll = (query, dbName) => {
   const db = new sqlite3.Database(`resources/${dbName}`);
   return new Promise((resolve, reject) => {
@@ -90,7 +57,11 @@ const buildPath = (galaxyMap, countdown, departure, arrival) => {
     countdown: 0
   };
   const findNeighbors = (path, planet, arrival, countdown, galaxyMap) => {
-    // Add current planet
+    // Add space to go to planet
+    for (let space = 1; planet.trip > space; space++) {
+      path.path.push(SPACE_STEP);
+    }
+    // Add planet
     path.path.push(planet.planet);
     path.countdown = path.countdown + planet.trip;
 
@@ -128,13 +99,12 @@ const buildTravelBook = async (tripParam, empireParam) => {
     tripParam.departure,
     tripParam.arrival
   );
-  const travelBook = buildPathWithSpace(paths, rows);
-  return travelBook;
+  console.log("paths", paths);
+  return paths;
 };
 
 module.exports = {
   buildTravelBook,
   buildGalaxyMap,
-  buildPathWithSpace,
   buildPath
 };

@@ -18,20 +18,20 @@ const buildPath = (travelBooks, empireParam, tripParam) => {
         newPaths.forEach(path => {
           // Create a graph for each occurence of step. the number of occurence depends on the number of free day (delta between countdownn and travel book)
           if (
-            ![SPACE_STEP, tripParam.arrival].includes(step.name) &&
+            ![SPACE_STEP, tripParam.arrival].includes(step) &&
             deltas >= 1
           ) {
             addPath(deltas, newPaths, step, path);
           }
           // Add single step to existing graph
-          path.push(step.name);
+          path.push(step);
         });
       } else {
         if (deltas >= 1) {
           newPaths = addPath(deltas, newPaths, step, null);
         } else {
           const path = [];
-          path.push(step.name);
+          path.push(step);
           newPaths.push(path);
         }
       }
@@ -55,7 +55,7 @@ const addPath = (deltas, newPaths, step, path) => {
       addStepOccurence <= deltaPosition;
       addStepOccurence++
     ) {
-      newPath.push(step.name);
+      newPath.push(step);
     }
     newPaths.push(newPath);
   }

@@ -5,23 +5,8 @@ const { buildPaths } = require("../../src/service/pathService");
 describe("PathService", () => {
   describe("#buildPaths - Path and countdown ", () => {
     const travelBooks = [
-      [
-        { name: "A", position: 0 },
-        { name: "B", position: 1 },
-        { name: "space", position: 2 },
-        { name: "space", position: 3 },
-        { name: "C", position: 4 },
-        { name: "space", position: 5 },
-        { name: "D", position: 6 }
-      ],
-      [
-        { name: "A", position: 0 },
-        { name: "space", position: 1 },
-        { name: "space", position: 2 },
-        { name: "space", position: 3 },
-        { name: "space", position: 4 },
-        { name: "D", position: 5 }
-      ]
+      ["A", "B", "space", "space", "C", "space", "D"],
+      ["A", "space", "space", "space", "space", "D"]
     ];
     const dataDriven = [
       {
@@ -123,17 +108,7 @@ describe("PathService", () => {
     });
   });
   describe("#buildPaths - Autonomy and countdown ", () => {
-    const travelBooks = [
-      [
-        { name: "A", position: 0 },
-        { name: "B", position: 1 },
-        { name: "space", position: 2 },
-        { name: "space", position: 3 },
-        { name: "C", position: 4 },
-        { name: "space", position: 5 },
-        { name: "D", position: 6 }
-      ]
-    ];
+    const travelBooks = [["A", "B", "space", "space", "C", "space", "D"]];
     const dataDriven = [
       {
         desc: "Should return 100 as there is 1 possible path",

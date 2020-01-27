@@ -5,25 +5,8 @@ const { buildPaths } = require("../../src/service/pathService");
 describe("TrickyPath", () => {
   describe("#trickyPath - Some tricky point", () => {
     const travelBooks = [
-      [
-        { name: "A", position: 0 },
-        { name: "B", position: 1 },
-        { name: "space", position: 2 },
-        { name: "space", position: 3 },
-        { name: "C", position: 4 },
-        { name: "space", position: 5 },
-        { name: "D", position: 6 },
-        { name: "F", position: 7 }
-      ],
-      [
-        { name: "A", position: 0 },
-        { name: "space", position: 1 },
-        { name: "space", position: 2 },
-        { name: "space", position: 3 },
-        { name: "C", position: 4 },
-        { name: "space", position: 5 },
-        { name: "F", position: 6 }
-      ]
+      ["A", "B", "space", "space", "C", "space", "D", "F"],
+      ["A", "space", "space", "space", "C", "space", "F"]
     ];
     const dataDriven = [
       {
@@ -91,7 +74,8 @@ describe("TrickyPath", () => {
         }
       },
       {
-        desc: "Should return 81 as the step B is mandatory in position 2 and C in position 5 or 6",
+        desc:
+          "Should return 81 as the step B is mandatory in position 2 and C in position 5 or 6",
         element: {
           travelBooks,
           bountyHunterParam: {
