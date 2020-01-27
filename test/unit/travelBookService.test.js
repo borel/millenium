@@ -95,7 +95,6 @@ describe("TravelBookService", () => {
       it(ctx.desc, () => {
         const galaxyMap = buildGalaxyMap(ctx.element.rows);
         const paths = buildPath(galaxyMap, 6, "A", "D");
-        console.log("pathWithSpace", paths);
         expect(paths).to.eql(ctx.expected.pathWithSpace);
       });
     });

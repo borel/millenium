@@ -52,27 +52,26 @@ const buildPath = (galaxyMap, countdown, departure, arrival) => {
   if (!galaxyMap) {
     return paths;
   }
-  const path = {
-    path: [],
-    countdown: 0
-  };
+ 
   const findNeighbors = (path, planet, arrival, countdown, galaxyMap) => {
     // Add space to go to planet
     for (let space = 1; planet.trip > space; space++) {
       path.path.push(SPACE_STEP);
     }
-    // Add planet
+    // Add planet to  current path and update count down
     path.path.push(planet.planet);
     path.countdown = path.countdown + planet.trip;
 
     if (path.countdown >= countdown) {
-      // nothing
+      // This graph does not respect the rules , we do not add it to graphs
     } else if (planet.planet == arrival) {
+      // Add ending graph
       paths.push(path);
     } else {
-      // Find potential planet
+      // Find potential neighbors and build new graph
       const neighbors = galaxyMap[planet.planet];
       neighbors.forEach(neighbor => {
+        // clone current path
         let newPath = {
           path: path ? Array.from(path.path) : [],
           countdown: path.countdown
@@ -80,6 +79,11 @@ const buildPath = (galaxyMap, countdown, departure, arrival) => {
         findNeighbors(newPath, neighbor, arrival, countdown, galaxyMap);
       });
     }
+  };
+
+  const path = {
+    path: [],
+    countdown: 0
   };
 
   const departureStructured = { planet: departure, trip: 0 };
@@ -99,7 +103,6 @@ const buildTravelBook = async (tripParam, empireParam) => {
     tripParam.departure,
     tripParam.arrival
   );
-  console.log("paths", paths);
   return paths;
 };
 
